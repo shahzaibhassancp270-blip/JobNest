@@ -133,24 +133,24 @@ class _PostJobScreenState extends ConsumerState<PostJobScreen> {
                     ),
                   ],
                 ),
-                child: const Column(
+                child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Container(
-                      padding: EdgeInsets.all(12),
+                      padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
                         color: Colors.white24,
                         shape: BoxShape.circle,
                       ),
-                      child: Icon(Icons.business_center_rounded, color: Colors.white, size: 32),
+                      child: const Icon(Icons.business_center_rounded, color: Colors.white, size: 32),
                     ),
-                    SizedBox(height: 16),
-                    Text(
+                    const SizedBox(height: 16),
+                    const Text(
                       'Hire Great Talent',
                       style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.w800),
                     ),
-                    SizedBox(height: 4),
-                    Text(
+                    const SizedBox(height: 4),
+                    const Text(
                       'Post your job and reach thousands of candidates instantly.',
                       style: TextStyle(color: Colors.white70, fontSize: 14, height: 1.4),
                     ),
