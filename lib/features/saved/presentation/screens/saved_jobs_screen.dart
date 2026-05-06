@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:jobnest/features/tracker/presentation/providers/applications_provider.dart';
 import 'package:jobnest/features/home/models/job_model.dart';
+import 'package:jobnest/core/constants/app_colors.dart';
 
 class SavedJobsScreen extends ConsumerWidget {
   const SavedJobsScreen({super.key});
@@ -13,17 +14,49 @@ class SavedJobsScreen extends ConsumerWidget {
     final savedJobs = ref.watch(savedJobsProvider);
 
     return Scaffold(
+      backgroundColor: const Color(0xFFF8F9FE),
       appBar: AppBar(
-        title: const Text('Saved Jobs', style: TextStyle(fontWeight: FontWeight.bold)),
+        elevation: 0,
+        backgroundColor: Colors.white,
+        title: const Text(
+          'Saved Jobs',
+          style: TextStyle(fontWeight: FontWeight.w800, fontSize: 20),
+        ),
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(1),
+          child: Container(
+            color: Colors.grey.withValues(alpha: 0.1),
+            height: 1,
+          ),
+        ),
       ),
       body: savedJobs.isEmpty
           ? Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.bookmark_border, size: 80, color: Colors.grey[300]),
-                  const SizedBox(height: 16),
-                  const Text('No saved jobs yet', style: TextStyle(color: Colors.grey, fontSize: 18)),
+                  Container(
+                    padding: const EdgeInsets.all(24),
+                    decoration: BoxDecoration(
+                      color: AppColors.primary.withValues(alpha: 0.1),
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(Icons.bookmark_outline_rounded,
+                        size: 64, color: AppColors.primary),
+                  ),
+                  const SizedBox(height: 24),
+                  const Text(
+                    'No Saved Jobs',
+                    style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w800,
+                        color: Colors.black87),
+                  ),
+                  const SizedBox(height: 8),
+                  const Text(
+                    'Jobs you bookmark will appear here.',
+                    style: TextStyle(color: Colors.grey),
+                  ),
                 ],
               ),
             )
@@ -32,49 +65,101 @@ class SavedJobsScreen extends ConsumerWidget {
               itemCount: savedJobs.length,
               itemBuilder: (context, index) {
                 final job = savedJobs[index];
-                return Card(
-                  elevation: 0,
-                  margin: const EdgeInsets.only(bottom: 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                    side: BorderSide(color: Colors.grey.withOpacity(0.1)),
-                  ),
-                  child: ListTile(
-                    onTap: () {
-                      final fullJob = JobModel(
-                        jobId: job.jobId,
-                        jobTitle: job.jobTitle,
-                        employerName: job.companyName,
-                        employerLogo: job.companyLogo,
-                        jobCity: job.location.split(',').first.trim(),
-                        jobApplyLink: job.applyLink,
-                        jobEmploymentType: job.employmentType,
-                      );
-                      context.push('/job-detail', extra: fullJob);
-                    },
-                    contentPadding: const EdgeInsets.all(16),
-                    leading: Container(
-                      width: 50,
-                      height: 50,
-                      decoration: BoxDecoration(
-                        color: Colors.blue.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: job.companyLogo != null
-                          ? ClipRRect(
-                              borderRadius: BorderRadius.circular(12),
-                              child: Image.network(job.companyLogo!, fit: BoxFit.contain),
-                            )
-                          : const Icon(Icons.business),
+                return GestureDetector(
+                  onTap: () {
+                    final fullJob = JobModel(
+                      jobId: job.jobId,
+                      jobTitle: job.jobTitle,
+                      employerName: job.companyName,
+                      employerLogo: job.companyLogo,
+                      jobCity: job.location.split(',').first.trim(),
+                      jobApplyLink: job.applyLink,
+                      jobEmploymentType: job.employmentType,
+                    );
+                    context.push('/job-detail', extra: fullJob);
+                  },
+                  child: Container(
+                    margin: const EdgeInsets.only(bottom: 14),
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.03),
+                          blurRadius: 10,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
                     ),
-                    title: Text(job.jobTitle, style: const TextStyle(fontWeight: FontWeight.bold)),
-                    subtitle: Text(job.companyName),
-                    trailing: IconButton(
-                      icon: const Icon(Icons.bookmark, color: Colors.blue),
-                      onPressed: () {
-                        final tempJob = JobModel(jobId: job.jobId);
-                        ref.read(savedJobsProvider.notifier).toggleSave(tempJob);
-                      },
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Company Logo
+                        Container(
+                          width: 52,
+                          height: 52,
+                          decoration: BoxDecoration(
+                            color: AppColors.primary.withValues(alpha: 0.07),
+                            borderRadius: BorderRadius.circular(14),
+                            border: Border.all(
+                              color: AppColors.primary.withValues(alpha: 0.08),
+                            ),
+                          ),
+                          clipBehavior: Clip.antiAlias,
+                          child: job.companyLogo != null
+                              ? Image.network(
+                                  job.companyLogo!,
+                                  fit: BoxFit.contain,
+                                  cacheWidth: 104,
+                                  errorBuilder: (_, __, ___) => const Icon(
+                                      Icons.business_rounded,
+                                      color: AppColors.primary,
+                                      size: 24),
+                                )
+                              : const Icon(Icons.business_rounded,
+                                  color: AppColors.primary, size: 24),
+                        ),
+                        const SizedBox(width: 14),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                job.companyName,
+                                style: TextStyle(
+                                  color: Colors.grey[600],
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                job.jobTitle,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.w800,
+                                  fontSize: 15,
+                                  height: 1.2,
+                                ),
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ],
+                          ),
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.bookmark_rounded,
+                              color: AppColors.primary),
+                          onPressed: () {
+                            final tempJob = JobModel(jobId: job.jobId);
+                            ref
+                                .read(savedJobsProvider.notifier)
+                                .toggleSave(tempJob);
+                          },
+                        ),
+                      ],
                     ),
                   ),
                 );
@@ -85,17 +170,28 @@ class SavedJobsScreen extends ConsumerWidget {
         type: BottomNavigationBarType.fixed,
         onTap: (index) {
           switch (index) {
-            case 0: context.go('/'); break;
-            case 1: context.go('/tracker'); break;
-            case 2: break;
-            case 3: context.go('/analytics'); break;
+            case 0:
+              context.go('/');
+              break;
+            case 1:
+              context.go('/tracker');
+              break;
+            case 2:
+              break;
+            case 3:
+              context.go('/analytics');
+              break;
           }
         },
         items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Search'),
-          BottomNavigationBarItem(icon: Icon(Icons.view_kanban_outlined), label: 'Tracker'),
-          BottomNavigationBarItem(icon: Icon(Icons.bookmark), label: 'Saved'),
-          BottomNavigationBarItem(icon: Icon(Icons.analytics_outlined), label: 'Analytics'),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.search_rounded), label: 'Search'),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.view_kanban_outlined), label: 'Tracker'),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.bookmark_rounded), label: 'Saved'),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.analytics_outlined), label: 'Analytics'),
         ],
       ),
     );

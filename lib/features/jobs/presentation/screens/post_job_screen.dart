@@ -71,6 +71,7 @@ class _PostJobScreenState extends ConsumerState<PostJobScreen> {
           const SnackBar(
             content: Text('✅ Job posted successfully!'),
             backgroundColor: Colors.green,
+            behavior: SnackBarBehavior.floating,
           ),
         );
         context.pop();
@@ -78,7 +79,11 @@ class _PostJobScreenState extends ConsumerState<PostJobScreen> {
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: $e'), backgroundColor: Colors.red),
+          SnackBar(
+            content: Text('Error: $e'), 
+            backgroundColor: Colors.red,
+            behavior: SnackBarBehavior.floating,
+          ),
         );
       }
     } finally {
@@ -89,8 +94,18 @@ class _PostJobScreenState extends ConsumerState<PostJobScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFFF8F9FE),
       appBar: AppBar(
-        title: const Text('Post a Job', style: TextStyle(fontWeight: FontWeight.bold)),
+        elevation: 0,
+        backgroundColor: Colors.white,
+        title: const Text(
+          'Post a Job',
+          style: TextStyle(fontWeight: FontWeight.w800, fontSize: 18),
+        ),
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(1),
+          child: Container(color: Colors.grey.withValues(alpha: 0.1), height: 1),
+        ),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24),
@@ -99,87 +114,109 @@ class _PostJobScreenState extends ConsumerState<PostJobScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Header
+              // Premium Header
               Container(
                 width: double.infinity,
-                padding: const EdgeInsets.all(20),
+                padding: const EdgeInsets.all(24),
                 decoration: BoxDecoration(
                   gradient: const LinearGradient(
                     colors: [AppColors.primary, Color(0xFF818CF8)],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
-                  borderRadius: BorderRadius.circular(20),
+                  borderRadius: BorderRadius.circular(24),
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.primary.withValues(alpha: 0.3),
+                      blurRadius: 16,
+                      offset: const Offset(0, 8),
+                    ),
+                  ],
                 ),
                 child: const Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Icon(Icons.business_center_rounded, color: Colors.white, size: 36),
-                    SizedBox(height: 8),
+                    Container(
+                      padding: EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: Colors.white24,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(Icons.business_center_rounded, color: Colors.white, size: 32),
+                    ),
+                    SizedBox(height: 16),
                     Text(
                       'Hire Great Talent',
-                      style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
+                      style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.w800),
                     ),
+                    SizedBox(height: 4),
                     Text(
-                      'Post your job and reach thousands of candidates.',
-                      style: TextStyle(color: Colors.white70, fontSize: 13),
+                      'Post your job and reach thousands of candidates instantly.',
+                      style: TextStyle(color: Colors.white70, fontSize: 14, height: 1.4),
                     ),
                   ],
                 ),
               ),
               const SizedBox(height: 32),
 
-              _buildField('Job Title *', 'e.g. Senior Flutter Developer', _titleController,
-                  Icons.work_outline),
-              _buildField('Company Name *', 'e.g. Tech Corp', _companyController,
-                  Icons.business_outlined),
-              _buildField('Location *', 'e.g. Lahore, Pakistan', _locationController,
-                  Icons.location_on_outlined),
-
-              const SizedBox(height: 20),
-              const Text('Employment Type', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
-              const SizedBox(height: 10),
-              Wrap(
-                spacing: 8,
-                children: _employmentTypes.map((type) {
-                  final isSelected = _selectedType == type;
-                  return ChoiceChip(
-                    label: Text(type),
-                    selected: isSelected,
-                    onSelected: (_) => setState(() => _selectedType = type),
-                    selectedColor: AppColors.primary,
-                    labelStyle: TextStyle(
-                      color: isSelected ? Colors.white : null,
-                      fontWeight: FontWeight.w600,
+              Container(
+                padding: const EdgeInsets.all(24),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(24),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.03),
+                      blurRadius: 16,
+                      offset: const Offset(0, 4),
                     ),
-                  );
-                }).toList(),
-              ),
-              const SizedBox(height: 20),
-
-              _buildField('Salary / Range', 'e.g. 80,000 - 120,000 PKR', _salaryController,
-                  Icons.payments_outlined, required: false),
-              _buildField(
-                'Contact (Email or Phone) *',
-                'e.g. hr@company.com',
-                _contactController,
-                Icons.contact_mail_outlined,
-              ),
-
-              const SizedBox(height: 8),
-              const Text('Job Description *',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
-              const SizedBox(height: 8),
-              TextFormField(
-                controller: _descriptionController,
-                maxLines: 6,
-                decoration: InputDecoration(
-                  hintText: 'Describe the role, responsibilities, and requirements...',
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                  ],
                 ),
-                validator: (val) => val == null || val.isEmpty ? 'Required' : null,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text('Job Details', style: TextStyle(fontWeight: FontWeight.w800, fontSize: 18)),
+                    const SizedBox(height: 20),
+                    
+                    _buildField('Job Title *', 'e.g. Senior Flutter Developer', _titleController, Icons.work_outline_rounded),
+                    _buildField('Company Name *', 'e.g. Tech Corp', _companyController, Icons.business_outlined),
+                    _buildField('Location *', 'e.g. Lahore, Pakistan', _locationController, Icons.location_on_outlined),
+
+                    const SizedBox(height: 8),
+                    const Text('Employment Type', style: TextStyle(fontWeight: FontWeight.w700, fontSize: 14)),
+                    const SizedBox(height: 12),
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 8,
+                      children: _employmentTypes.map((type) {
+                        final isSelected = _selectedType == type;
+                        return ChoiceChip(
+                          label: Text(type),
+                          selected: isSelected,
+                          onSelected: (_) => setState(() => _selectedType = type),
+                        );
+                      }).toList(),
+                    ),
+                    const SizedBox(height: 24),
+
+                    _buildField('Salary / Range', 'e.g. 80,000 - 120,000 PKR', _salaryController, Icons.payments_outlined, required: false),
+                    _buildField('Contact (Email/Phone) *', 'e.g. hr@company.com', _contactController, Icons.contact_mail_outlined),
+
+                    const SizedBox(height: 8),
+                    const Text('Job Description *', style: TextStyle(fontWeight: FontWeight.w700, fontSize: 14)),
+                    const SizedBox(height: 8),
+                    TextFormField(
+                      controller: _descriptionController,
+                      maxLines: 6,
+                      decoration: const InputDecoration(
+                        hintText: 'Describe the role, responsibilities, and requirements...',
+                      ),
+                      validator: (val) => val == null || val.isEmpty ? 'Required' : null,
+                    ),
+                  ],
+                ),
               ),
-              const SizedBox(height: 40),
+              const SizedBox(height: 32),
 
               ElevatedButton.icon(
                 onPressed: _isLoading ? null : _postJob,
@@ -188,9 +225,10 @@ class _PostJobScreenState extends ConsumerState<PostJobScreen> {
                         width: 18, height: 18,
                         child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
                       )
-                    : const Icon(Icons.send_rounded),
-                label: const Text('Post Job'),
+                    : const Icon(Icons.rocket_launch_rounded),
+                label: Text(_isLoading ? 'Posting...' : 'Publish Job Post'),
               ),
+              const SizedBox(height: 40),
             ],
           ),
         ),
@@ -206,18 +244,17 @@ class _PostJobScreenState extends ConsumerState<PostJobScreen> {
     bool required = true,
   }) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.only(bottom: 20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(label, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+          Text(label, style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 14)),
           const SizedBox(height: 8),
           TextFormField(
             controller: controller,
             decoration: InputDecoration(
               hintText: hint,
-              prefixIcon: Icon(icon),
-              border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+              prefixIcon: Icon(icon, color: Colors.grey[500]),
             ),
             validator: required
                 ? (val) => val == null || val.isEmpty ? 'Required' : null
