@@ -27,11 +27,18 @@ final routerProvider = Provider<GoRouter>((ref) {
     redirect: (context, state) {
       final isLoggedIn = authState.value != null;
       final path = state.matchedLocation;
-      final isAuthPath = path.startsWith('/auth') || path == '/splash';
+      final isAuthPath = path.startsWith('/auth');
+      final isSplash = path == '/splash';
       final isOnboarding = path == '/onboarding';
 
-      if (!isLoggedIn && !isAuthPath) return '/auth/login';
-      if (isLoggedIn && isAuthPath && !isOnboarding) return null; // splash handles redirect
+      // Not logged in → force to login
+      if (!isLoggedIn && !isAuthPath && !isSplash && !isOnboarding) {
+        return '/auth/login';
+      }
+      // Logged in and stuck on an auth screen (e.g. after Google sign-in)
+      // → send through splash so onboarding check fires
+      if (isLoggedIn && isAuthPath) return '/splash';
+
       return null;
     },
     routes: [

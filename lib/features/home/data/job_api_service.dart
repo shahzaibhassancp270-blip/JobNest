@@ -17,23 +17,27 @@ class JobApiService {
   Future<List<JobModel>> searchJobs({
     required String query,
     int page = 1,
-    String? employmentTypes,
-    String? datePosted = 'all',
-    bool? remoteOnly,
+    List<String>? employmentTypes, // now a list for multi-select
+    String datePosted = 'all',     // 'all', 'today', 'week', 'month'
+    bool remoteOnly = false,
   }) async {
     try {
-      // Using /search as it's the standard endpoint for JSearch
+      // Build employment types string — JSearch accepts comma-separated
+      final empTypes = (employmentTypes != null && employmentTypes.isNotEmpty)
+          ? employmentTypes.join(',')
+          : null;
+
       final response = await _dio.get('/search', queryParameters: {
         'query': query,
         'page': page,
         'num_pages': 1,
-        'employment_types': employmentTypes,
+        if (empTypes != null) 'employment_types': empTypes,
         'date_posted': datePosted,
-        'remote_jobs_only': remoteOnly == true ? 'true' : 'false',
+        'remote_jobs_only': remoteOnly ? 'true' : 'false',
       });
 
       if (response.statusCode == 200) {
-        final List data = response.data['data'];
+        final List data = response.data['data'] ?? [];
         return data.map((json) => JobModel.fromJson(json)).toList();
       } else {
         throw Exception('Failed to load jobs');

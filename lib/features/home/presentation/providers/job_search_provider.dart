@@ -12,6 +12,9 @@ class JobSearchState {
   final int currentPage;
   final String query;
   final bool hasMore;
+  final List<String> selectedEmploymentTypes;
+  final String datePosted;
+  final bool remoteOnly;
 
   JobSearchState({
     this.jobs = const [],
@@ -20,6 +23,9 @@ class JobSearchState {
     this.currentPage = 1,
     this.query = '',
     this.hasMore = true,
+    this.selectedEmploymentTypes = const [],
+    this.datePosted = 'all',
+    this.remoteOnly = false,
   });
 
   JobSearchState copyWith({
@@ -30,6 +36,9 @@ class JobSearchState {
     int? currentPage,
     String? query,
     bool? hasMore,
+    List<String>? selectedEmploymentTypes,
+    String? datePosted,
+    bool? remoteOnly,
   }) {
     return JobSearchState(
       jobs: jobs ?? this.jobs,
@@ -38,34 +47,60 @@ class JobSearchState {
       currentPage: currentPage ?? this.currentPage,
       query: query ?? this.query,
       hasMore: hasMore ?? this.hasMore,
+      selectedEmploymentTypes: selectedEmploymentTypes ?? this.selectedEmploymentTypes,
+      datePosted: datePosted ?? this.datePosted,
+      remoteOnly: remoteOnly ?? this.remoteOnly,
     );
   }
 }
 
 class JobSearchNotifier extends Notifier<JobSearchState> {
   @override
-  JobSearchState build() {
-    return JobSearchState();
-  }
+  JobSearchState build() => JobSearchState();
 
-  Future<void> searchJobs(String query, {bool remoteOnly = false, String employmentType = 'FULLTIME', String? location}) async {
+  Future<void> searchJobs(
+    String query, {
+    bool? remoteOnly,
+    List<String>? employmentTypes,
+    String? location,
+    String? datePosted,
+  }) async {
     if (query.isEmpty) return;
-    
-    String finalQuery = query;
-    if (location != null && location.isNotEmpty) {
-      finalQuery = "$query in $location";
-    }
 
-    state = state.copyWith(isLoading: true, query: finalQuery, jobs: [], currentPage: 1, hasMore: true);
-    
+    // Build final query with location if provided
+    final finalQuery = (location != null && location.isNotEmpty)
+        ? '$query in $location'
+        : query;
+
+    final empTypes = employmentTypes ?? state.selectedEmploymentTypes;
+    final remote = remoteOnly ?? state.remoteOnly;
+    final date = datePosted ?? state.datePosted;
+
+    state = state.copyWith(
+      isLoading: true,
+      query: finalQuery,
+      jobs: [],
+      currentPage: 1,
+      hasMore: true,
+      clearError: true,
+      selectedEmploymentTypes: empTypes,
+      remoteOnly: remote,
+      datePosted: date,
+    );
+
     try {
       final jobs = await ref.read(jobApiServiceProvider).searchJobs(
-        query: finalQuery,
-        page: 1,
-        remoteOnly: remoteOnly,
-        employmentTypes: employmentType,
+            query: finalQuery,
+            page: 1,
+            employmentTypes: empTypes.isEmpty ? null : empTypes,
+            remoteOnly: remote,
+            datePosted: date,
+          );
+      state = state.copyWith(
+        isLoading: false,
+        jobs: jobs,
+        hasMore: jobs.isNotEmpty,
       );
-      state = state.copyWith(isLoading: false, jobs: jobs, hasMore: jobs.isNotEmpty);
     } catch (e) {
       state = state.copyWith(isLoading: false, error: e.toString());
     }
@@ -73,16 +108,20 @@ class JobSearchNotifier extends Notifier<JobSearchState> {
 
   Future<void> loadMore() async {
     if (state.isLoading || !state.hasMore) return;
-
     state = state.copyWith(isLoading: true);
     final nextPage = state.currentPage + 1;
 
     try {
       final newJobs = await ref.read(jobApiServiceProvider).searchJobs(
-        query: state.query,
-        page: nextPage,
-      );
-      
+            query: state.query,
+            page: nextPage,
+            employmentTypes: state.selectedEmploymentTypes.isEmpty
+                ? null
+                : state.selectedEmploymentTypes,
+            remoteOnly: state.remoteOnly,
+            datePosted: state.datePosted,
+          );
+
       if (newJobs.isEmpty) {
         state = state.copyWith(isLoading: false, hasMore: false);
       } else {
@@ -98,4 +137,5 @@ class JobSearchNotifier extends Notifier<JobSearchState> {
   }
 }
 
-final jobSearchProvider = NotifierProvider<JobSearchNotifier, JobSearchState>(JobSearchNotifier.new);
+final jobSearchProvider =
+    NotifierProvider<JobSearchNotifier, JobSearchState>(JobSearchNotifier.new);
