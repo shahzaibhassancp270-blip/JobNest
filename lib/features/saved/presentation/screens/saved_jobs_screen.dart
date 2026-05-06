@@ -14,10 +14,10 @@ class SavedJobsScreen extends ConsumerWidget {
     final savedJobs = ref.watch(savedJobsProvider);
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F9FE),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: Colors.white,
+        backgroundColor: Theme.of(context).appBarTheme.backgroundColor ?? Theme.of(context).colorScheme.surface,
         title: const Text(
           'Saved Jobs',
           style: TextStyle(fontWeight: FontWeight.w800, fontSize: 20),
@@ -25,7 +25,7 @@ class SavedJobsScreen extends ConsumerWidget {
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(1),
           child: Container(
-            color: Colors.grey.withValues(alpha: 0.1),
+            color: Theme.of(context).dividerColor.withValues(alpha: 0.1),
             height: 1,
           ),
         ),
@@ -82,7 +82,7 @@ class SavedJobsScreen extends ConsumerWidget {
                     margin: const EdgeInsets.only(bottom: 14),
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: Theme.of(context).cardTheme.color ?? Theme.of(context).cardColor,
                       borderRadius: BorderRadius.circular(20),
                       boxShadow: [
                         BoxShadow(

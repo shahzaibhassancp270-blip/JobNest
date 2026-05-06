@@ -15,10 +15,10 @@ class KanbanScreen extends ConsumerWidget {
     final statuses = ['Saved', 'Applied', 'Interview', 'Offer', 'Rejected'];
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F9FE),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: Colors.white,
+        backgroundColor: Theme.of(context).appBarTheme.backgroundColor ?? Theme.of(context).colorScheme.surface,
         title: const Text(
           'Application Tracker',
           style: TextStyle(fontWeight: FontWeight.w800, fontSize: 20),
@@ -26,7 +26,7 @@ class KanbanScreen extends ConsumerWidget {
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(1),
           child: Container(
-            color: Colors.grey.withValues(alpha: 0.1),
+            color: Theme.of(context).dividerColor.withValues(alpha: 0.1),
             height: 1,
           ),
         ),

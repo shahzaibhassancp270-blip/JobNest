@@ -94,17 +94,17 @@ class _PostJobScreenState extends ConsumerState<PostJobScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F9FE),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: Colors.white,
+        backgroundColor: Theme.of(context).appBarTheme.backgroundColor ?? Theme.of(context).colorScheme.surface,
         title: const Text(
           'Post a Job',
           style: TextStyle(fontWeight: FontWeight.w800, fontSize: 18),
         ),
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(1),
-          child: Container(color: Colors.grey.withValues(alpha: 0.1), height: 1),
+          child: Container(color: Theme.of(context).dividerColor.withValues(alpha: 0.1), height: 1),
         ),
       ),
       body: SingleChildScrollView(
@@ -162,7 +162,7 @@ class _PostJobScreenState extends ConsumerState<PostJobScreen> {
               Container(
                 padding: const EdgeInsets.all(24),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: Theme.of(context).cardTheme.color ?? Theme.of(context).cardColor,
                   borderRadius: BorderRadius.circular(24),
                   boxShadow: [
                     BoxShadow(

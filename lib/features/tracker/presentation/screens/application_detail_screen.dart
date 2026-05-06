@@ -91,17 +91,17 @@ class _ApplicationDetailScreenState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F9FE),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: Colors.white,
+        backgroundColor: Theme.of(context).appBarTheme.backgroundColor ?? Theme.of(context).colorScheme.surface,
         title: const Text(
           'Application Detail',
           style: TextStyle(fontWeight: FontWeight.w800, fontSize: 18),
         ),
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(1),
-          child: Container(color: Colors.grey.withValues(alpha: 0.1), height: 1),
+          child: Container(color: Theme.of(context).dividerColor.withValues(alpha: 0.1), height: 1),
         ),
         actions: [
           IconButton(
@@ -147,7 +147,7 @@ class _ApplicationDetailScreenState
             Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: Theme.of(context).cardTheme.color ?? Theme.of(context).cardColor,
                 borderRadius: BorderRadius.circular(20),
                 boxShadow: [
                   BoxShadow(
@@ -220,15 +220,15 @@ class _ApplicationDetailScreenState
               icon: const Icon(Icons.keyboard_arrow_down_rounded, color: AppColors.primary),
               decoration: InputDecoration(
                 filled: true,
-                fillColor: Colors.white,
+                fillColor: Theme.of(context).inputDecorationTheme.fillColor ?? Theme.of(context).cardColor,
                 contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(16),
-                  borderSide: BorderSide(color: Colors.grey.withValues(alpha: 0.2)),
+                  borderSide: BorderSide(color: Theme.of(context).dividerColor.withValues(alpha: 0.1)),
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(16),
-                  borderSide: BorderSide(color: Colors.grey.withValues(alpha: 0.2)),
+                  borderSide: BorderSide(color: Theme.of(context).dividerColor.withValues(alpha: 0.1)),
                 ),
               ),
               items: ['Saved', 'Applied', 'Interview', 'Offer', 'Rejected']
@@ -249,9 +249,9 @@ class _ApplicationDetailScreenState
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: Theme.of(context).inputDecorationTheme.fillColor ?? Theme.of(context).cardColor,
                   borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: Colors.grey.withValues(alpha: 0.2)),
+                  border: Border.all(color: Theme.of(context).dividerColor.withValues(alpha: 0.1)),
                 ),
                 child: Row(
                   children: [
@@ -294,15 +294,15 @@ class _ApplicationDetailScreenState
               decoration: InputDecoration(
                 hintText: 'Link to your resume/portfolio',
                 filled: true,
-                fillColor: Colors.white,
+                fillColor: Theme.of(context).inputDecorationTheme.fillColor ?? Theme.of(context).cardColor,
                 prefixIcon: const Icon(Icons.link_rounded),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(16),
-                  borderSide: BorderSide(color: Colors.grey.withValues(alpha: 0.2)),
+                  borderSide: BorderSide(color: Theme.of(context).dividerColor.withValues(alpha: 0.1)),
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(16),
-                  borderSide: BorderSide(color: Colors.grey.withValues(alpha: 0.2)),
+                  borderSide: BorderSide(color: Theme.of(context).dividerColor.withValues(alpha: 0.1)),
                 ),
               ),
             ),
@@ -317,14 +317,14 @@ class _ApplicationDetailScreenState
               decoration: InputDecoration(
                 hintText: 'Add some notes about the application...',
                 filled: true,
-                fillColor: Colors.white,
+                fillColor: Theme.of(context).inputDecorationTheme.fillColor ?? Theme.of(context).cardColor,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(16),
-                  borderSide: BorderSide(color: Colors.grey.withValues(alpha: 0.2)),
+                  borderSide: BorderSide(color: Theme.of(context).dividerColor.withValues(alpha: 0.1)),
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(16),
-                  borderSide: BorderSide(color: Colors.grey.withValues(alpha: 0.2)),
+                  borderSide: BorderSide(color: Theme.of(context).dividerColor.withValues(alpha: 0.1)),
                 ),
               ),
             ),

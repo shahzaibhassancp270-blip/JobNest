@@ -22,7 +22,7 @@ class KanbanColumn extends StatelessWidget {
       width: 290,
       margin: const EdgeInsets.only(right: 16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).cardTheme.color ?? Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
@@ -77,10 +77,10 @@ class KanbanColumn extends StatelessWidget {
                     margin: const EdgeInsets.only(bottom: 12),
                     padding: const EdgeInsets.all(14),
                     decoration: BoxDecoration(
-                      color: const Color(0xFFF8F9FE),
+                      color: Theme.of(context).scaffoldBackgroundColor,
                       borderRadius: BorderRadius.circular(16),
                       border: Border.all(
-                        color: Colors.grey.withValues(alpha: 0.15),
+                        color: Theme.of(context).dividerColor.withValues(alpha: 0.1),
                       ),
                     ),
                     child: Column(
@@ -95,10 +95,10 @@ class KanbanColumn extends StatelessWidget {
                                   width: 36,
                                   height: 36,
                                   decoration: BoxDecoration(
-                                    color: Colors.white,
+                                    color: Theme.of(context).colorScheme.surface,
                                     borderRadius: BorderRadius.circular(10),
                                     border: Border.all(
-                                      color: Colors.grey.withValues(alpha: 0.2),
+                                      color: Theme.of(context).dividerColor.withValues(alpha: 0.1),
                                     ),
                                   ),
                                   child: ClipRRect(
@@ -122,10 +122,10 @@ class KanbanColumn extends StatelessWidget {
                                   width: 36,
                                   height: 36,
                                   decoration: BoxDecoration(
-                                    color: Colors.white,
+                                    color: Theme.of(context).colorScheme.surface,
                                     borderRadius: BorderRadius.circular(10),
                                     border: Border.all(
-                                      color: Colors.grey.withValues(alpha: 0.2),
+                                      color: Theme.of(context).dividerColor.withValues(alpha: 0.1),
                                     ),
                                   ),
                                   child: const Icon(Icons.business_rounded,
