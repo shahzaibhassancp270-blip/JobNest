@@ -24,6 +24,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   final _locationService = LocationService();
 
   String? _currentCity;
+  String? _currentCountryCode; // Added country code
   String _jobCategory = 'Software Engineer';
   bool _useLocationFilter = true;
 
@@ -42,33 +43,49 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   Future<void> _loadPreferencesAndSearch() async {
-    // Load saved preferences
+    // ① Load saved preferences immediately and start search — don't wait for GPS
     final category = await _prefsService.getJobCategory();
     final savedCity = await _prefsService.getCity();
     final empType = await _prefsService.getEmploymentType();
 
-    // Try GPS first, fall back to saved city
-    String? city = savedCity.isNotEmpty ? savedCity : null;
+    if (mounted) {
+      setState(() {
+        _jobCategory = category;
+        _currentCity = savedCity.isNotEmpty ? savedCity : null;
+        _searchController.text = category;
+        // If saved city contains "Pakistan" or is a common PK city, set default code
+        if (savedCity.toLowerCase().contains('pakistan') || 
+            ['lahore', 'karachi', 'islamabad'].any((c) => savedCity.toLowerCase().contains(c))) {
+          _currentCountryCode = 'PK';
+        }
+      });
+    }
+
+    // ② Start search right away with saved city
+    _performSearch(category, empType: empType);
+
+    // ③ GPS runs in the background — updates city silently if found
+    _updateCityFromGps();
+  }
+
+  Future<void> _updateCityFromGps() async {
     try {
       final position = await _locationService.getCurrentPosition();
       if (position != null) {
         final gpsCity = await _locationService.getCityFromPosition(position);
-        if (gpsCity != null && gpsCity.isNotEmpty) {
-          city = gpsCity;
-          await _prefsService.updateCity(gpsCity); // keep in sync
+        final gpsCountryCode = await _locationService.getCountryCodeFromPosition(position);
+        
+        if (gpsCity != null && gpsCity.isNotEmpty && mounted) {
+          await _prefsService.updateCity(gpsCity);
+          setState(() {
+            _currentCity = gpsCity;
+            _currentCountryCode = gpsCountryCode;
+          });
+          // Re-search with updated city only if location filter is on
+          if (_useLocationFilter) _performSearch(null, respectLocation: true);
         }
       }
     } catch (_) {}
-
-    if (mounted) {
-      setState(() {
-        _jobCategory = category;
-        _currentCity = city;
-        _searchController.text = category;
-      });
-    }
-
-    _performSearch(category, empType: empType);
   }
 
   void _performSearch(String? query, {bool respectLocation = true, String? empType}) {
@@ -76,11 +93,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     if (searchQuery.isEmpty) return;
 
     final location = (respectLocation && _useLocationFilter) ? _currentCity : null;
+    final country = (respectLocation && _useLocationFilter) ? _currentCountryCode : null;
     final state = ref.read(jobSearchProvider);
 
     ref.read(jobSearchProvider.notifier).searchJobs(
           searchQuery,
           location: location,
+          country: country,
           employmentTypes: empType != null ? [empType] : state.selectedEmploymentTypes,
           remoteOnly: state.remoteOnly,
           datePosted: state.datePosted,
@@ -138,6 +157,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     : _jobCategory,
                 location:
                     (_useLocationFilter ? _currentCity : null),
+                country: 
+                    (_useLocationFilter ? _currentCountryCode : null),
                 employmentTypes: empTypes,
                 remoteOnly: remoteOnly,
                 datePosted: datePosted,

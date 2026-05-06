@@ -20,6 +20,7 @@ class JobApiService {
     List<String>? employmentTypes, // now a list for multi-select
     String datePosted = 'all',     // 'all', 'today', 'week', 'month'
     bool remoteOnly = false,
+    String? country,               // 2-letter country code
   }) async {
     try {
       // Build employment types string — JSearch accepts comma-separated
@@ -34,6 +35,7 @@ class JobApiService {
         if (empTypes != null) 'employment_types': empTypes,
         'date_posted': datePosted,
         'remote_jobs_only': remoteOnly ? 'true' : 'false',
+        if (country != null) 'country': country,
       });
 
       if (response.statusCode == 200) {

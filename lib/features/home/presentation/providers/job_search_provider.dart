@@ -15,6 +15,7 @@ class JobSearchState {
   final List<String> selectedEmploymentTypes;
   final String datePosted;
   final bool remoteOnly;
+  final String? country; // Added country code
 
   JobSearchState({
     this.jobs = const [],
@@ -26,6 +27,7 @@ class JobSearchState {
     this.selectedEmploymentTypes = const [],
     this.datePosted = 'all',
     this.remoteOnly = false,
+    this.country,
   });
 
   JobSearchState copyWith({
@@ -39,6 +41,7 @@ class JobSearchState {
     List<String>? selectedEmploymentTypes,
     String? datePosted,
     bool? remoteOnly,
+    String? country,
   }) {
     return JobSearchState(
       jobs: jobs ?? this.jobs,
@@ -50,6 +53,7 @@ class JobSearchState {
       selectedEmploymentTypes: selectedEmploymentTypes ?? this.selectedEmploymentTypes,
       datePosted: datePosted ?? this.datePosted,
       remoteOnly: remoteOnly ?? this.remoteOnly,
+      country: country ?? this.country,
     );
   }
 }
@@ -63,6 +67,7 @@ class JobSearchNotifier extends Notifier<JobSearchState> {
     bool? remoteOnly,
     List<String>? employmentTypes,
     String? location,
+    String? country,
     String? datePosted,
   }) async {
     if (query.isEmpty) return;
@@ -86,6 +91,7 @@ class JobSearchNotifier extends Notifier<JobSearchState> {
       selectedEmploymentTypes: empTypes,
       remoteOnly: remote,
       datePosted: date,
+      country: country,
     );
 
     try {
@@ -95,6 +101,7 @@ class JobSearchNotifier extends Notifier<JobSearchState> {
             employmentTypes: empTypes.isEmpty ? null : empTypes,
             remoteOnly: remote,
             datePosted: date,
+            country: country,
           );
       state = state.copyWith(
         isLoading: false,
@@ -120,6 +127,7 @@ class JobSearchNotifier extends Notifier<JobSearchState> {
                 : state.selectedEmploymentTypes,
             remoteOnly: state.remoteOnly,
             datePosted: state.datePosted,
+            country: state.country,
           );
 
       if (newJobs.isEmpty) {

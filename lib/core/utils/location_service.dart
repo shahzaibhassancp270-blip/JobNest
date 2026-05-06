@@ -34,11 +34,31 @@ class LocationService {
         position.longitude,
       );
       if (placemarks.isNotEmpty) {
-        return placemarks[0].locality;
+        final place = placemarks[0];
+        final city = place.locality ?? place.subAdministrativeArea ?? '';
+        final country = place.country ?? '';
+        
+        if (city.isNotEmpty && country.isNotEmpty) {
+          return '$city, $country';
+        }
+        return city.isNotEmpty ? city : country;
       }
     } catch (e) {
       return null;
     }
+    return null;
+  }
+
+  Future<String?> getCountryCodeFromPosition(Position position) async {
+    try {
+      List<Placemark> placemarks = await placemarkFromCoordinates(
+        position.latitude,
+        position.longitude,
+      );
+      if (placemarks.isNotEmpty) {
+        return placemarks[0].isoCountryCode; // returns 'PK', 'US', etc.
+      }
+    } catch (_) {}
     return null;
   }
 }
