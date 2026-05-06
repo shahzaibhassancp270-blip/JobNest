@@ -33,9 +33,14 @@ void main() async {
   await Hive.openBox<SavedJobModel>('savedJobs');
   await Hive.openBox<ReminderModel>('reminders');
 
-  // Initialize Notifications
-  final notificationService = NotificationService();
-  await notificationService.initialize();
+  // Initialize Notifications (safe for emulators)
+  try {
+    final notificationService = NotificationService();
+    await notificationService.initialize();
+  } catch (e) {
+    // Notifications not supported on this device/emulator, continue anyway
+    debugPrint('Notifications not available: $e');
+  }
 
   runApp(
     const ProviderScope(

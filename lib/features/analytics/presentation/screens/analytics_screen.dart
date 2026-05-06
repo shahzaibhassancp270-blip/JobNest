@@ -67,9 +67,9 @@ class AnalyticsScreen extends ConsumerWidget {
         type: BottomNavigationBarType.fixed,
         onTap: (index) {
           switch (index) {
-            case 0: context.push('/'); break;
-            case 1: context.push('/tracker'); break;
-            case 2: context.push('/saved'); break;
+            case 0: context.go('/'); break;
+            case 1: context.go('/tracker'); break;
+            case 2: context.go('/saved'); break;
             case 3: break;
           }
         },

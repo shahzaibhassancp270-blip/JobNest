@@ -7,10 +7,7 @@ import 'package:flutter/foundation.dart'
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      throw UnsupportedError(
-        'DefaultFirebaseOptions have not been configured for web - '
-        'you can reconfigure this by running the FlutterFire CLI again.',
-      );
+      return web;
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
@@ -34,11 +31,23 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyApNDtqaNNJ8FM7_YW0MieLGH02vUiSB_Y',
-    appId: '1:754505389939:ios:bcbca6d1774ff290755706',
+    appId: '1:754505389939:ios:38fb69524e900d7e755706',
     messagingSenderId: '754505389939',
     projectId: 'jobnest-90c5b',
     storageBucket: 'jobnest-90c5b.firebasestorage.app',
-    iosBundleId: 'com.shazaib.jobnes',
+    androidClientId: '754505389939-5ouq7rh1cjrrs76v3bq9j5ht6do7irbv.apps.googleusercontent.com',
+    iosClientId: '754505389939-s56f7mkeqe29c33s9rihg72b1goghvhu.apps.googleusercontent.com',
+    iosBundleId: 'com.example.jobnest',
+  );
+
+  static const FirebaseOptions web = FirebaseOptions(
+    apiKey: 'AIzaSyDoJjw4O2jm2_1f84KikzCy5oyAeGaO6ws',
+    appId: '1:754505389939:web:a1692e9f1933103b755706',
+    messagingSenderId: '754505389939',
+    projectId: 'jobnest-90c5b',
+    authDomain: 'jobnest-90c5b.firebaseapp.com',
+    storageBucket: 'jobnest-90c5b.firebasestorage.app',
+    measurementId: 'G-QGC5JKD8DY',
   );
 
 }

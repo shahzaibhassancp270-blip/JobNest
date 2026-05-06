@@ -26,6 +26,7 @@ class JobSearchState {
     List<JobModel>? jobs,
     bool? isLoading,
     String? error,
+    bool clearError = false,
     int? currentPage,
     String? query,
     bool? hasMore,
@@ -33,7 +34,7 @@ class JobSearchState {
     return JobSearchState(
       jobs: jobs ?? this.jobs,
       isLoading: isLoading ?? this.isLoading,
-      error: error,
+      error: clearError ? null : (error ?? this.error),
       currentPage: currentPage ?? this.currentPage,
       query: query ?? this.query,
       hasMore: hasMore ?? this.hasMore,

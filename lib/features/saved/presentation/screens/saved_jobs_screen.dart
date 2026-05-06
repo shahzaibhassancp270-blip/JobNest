@@ -85,10 +85,10 @@ class SavedJobsScreen extends ConsumerWidget {
         type: BottomNavigationBarType.fixed,
         onTap: (index) {
           switch (index) {
-            case 0: context.push('/'); break;
-            case 1: context.push('/tracker'); break;
+            case 0: context.go('/'); break;
+            case 1: context.go('/tracker'); break;
             case 2: break;
-            case 3: context.push('/analytics'); break;
+            case 3: context.go('/analytics'); break;
           }
         },
         items: const [

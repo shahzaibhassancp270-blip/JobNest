@@ -1,5 +1,4 @@
 // lib/routing/app_router.dart
-import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jobnest/features/auth/presentation/providers/auth_provider.dart';
@@ -15,6 +14,8 @@ import 'package:jobnest/features/saved/presentation/screens/saved_jobs_screen.da
 import 'package:jobnest/features/analytics/presentation/screens/analytics_screen.dart';
 import 'package:jobnest/features/reminders/presentation/screens/reminders_screen.dart';
 import 'package:jobnest/features/profile/presentation/screens/profile_screen.dart';
+import 'package:jobnest/features/onboarding/presentation/screens/onboarding_screen.dart';
+import 'package:jobnest/features/jobs/presentation/screens/post_job_screen.dart';
 import 'package:jobnest/features/home/models/job_model.dart';
 import 'package:jobnest/features/tracker/models/application_model.dart';
 
@@ -25,11 +26,12 @@ final routerProvider = Provider<GoRouter>((ref) {
     initialLocation: '/splash',
     redirect: (context, state) {
       final isLoggedIn = authState.value != null;
-      final isAuthPath = state.matchedLocation.startsWith('/auth') || state.matchedLocation == '/splash';
+      final path = state.matchedLocation;
+      final isAuthPath = path.startsWith('/auth') || path == '/splash';
+      final isOnboarding = path == '/onboarding';
 
       if (!isLoggedIn && !isAuthPath) return '/auth/login';
-      if (isLoggedIn && isAuthPath) return '/';
-      
+      if (isLoggedIn && isAuthPath && !isOnboarding) return null; // splash handles redirect
       return null;
     },
     routes: [
@@ -50,6 +52,10 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => const ForgotPasswordScreen(),
       ),
       GoRoute(
+        path: '/onboarding',
+        builder: (context, state) => const OnboardingScreen(),
+      ),
+      GoRoute(
         path: '/',
         builder: (context, state) => const HomeScreen(),
         routes: [
@@ -65,7 +71,8 @@ final routerProvider = Provider<GoRouter>((ref) {
         routes: [
           GoRoute(
             path: 'detail',
-            builder: (context, state) => ApplicationDetailScreen(application: state.extra as ApplicationModel),
+            builder: (context, state) =>
+                ApplicationDetailScreen(application: state.extra as ApplicationModel),
           ),
         ],
       ),
@@ -84,6 +91,10 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/profile',
         builder: (context, state) => const ProfileScreen(),
+      ),
+      GoRoute(
+        path: '/post-job',
+        builder: (context, state) => const PostJobScreen(),
       ),
     ],
   );

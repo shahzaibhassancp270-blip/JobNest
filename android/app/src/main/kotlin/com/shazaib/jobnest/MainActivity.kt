@@ -1,4 +1,4 @@
-package com.example.jobnest
+package com.shazaib.jobnest
 
 import io.flutter.embedding.android.FlutterActivity
 

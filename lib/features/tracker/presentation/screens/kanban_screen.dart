@@ -36,10 +36,10 @@ class KanbanScreen extends ConsumerWidget {
         type: BottomNavigationBarType.fixed,
         onTap: (index) {
           switch (index) {
-            case 0: context.push('/'); break;
+            case 0: context.go('/'); break;
             case 1: break;
-            case 2: context.push('/saved'); break;
-            case 3: context.push('/analytics'); break;
+            case 2: context.go('/saved'); break;
+            case 3: context.go('/analytics'); break;
           }
         },
         items: const [

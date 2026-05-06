@@ -27,7 +27,9 @@ class AuthService {
         email: email,
         password: password,
       );
+      // Set display name and reload so it's immediately available
       await credential.user?.updateDisplayName(name);
+      await credential.user?.reload();
       return credential;
     } catch (e) {
       rethrow;
